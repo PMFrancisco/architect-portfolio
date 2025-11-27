@@ -1,13 +1,40 @@
 @import "tailwindcss";
 
-/* Swiss Style Design System */
+/* ============================================
+   SWISS STYLE DESIGN SYSTEM
+   Based on International Typographic Style
+   ============================================ */
+
 @theme {
-  /* Typography - IBM Plex Sans (Helvetica-inspired, clean Swiss aesthetic) */
+  /* ----------------------------------------
+     TYPOGRAPHY
+     IBM Plex Sans - Helvetica-inspired, 
+     clean Swiss aesthetic
+     ---------------------------------------- */
   --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
   
-  /* Colors - High contrast Swiss palette */
-  --color-primary: #E63946;        /* Architectural Red - Bold accent */
-  --color-primary-dark: #C1121F;   /* Darker red for hover states */
+  /* Font weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* Letter spacing - tight for Swiss style */
+  --letter-spacing-tighter: -0.05em;
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.1em;
+  
+  /* ----------------------------------------
+     COLORS
+     High contrast Swiss palette
+     ---------------------------------------- */
+  
+  /* Primary - Architectural Red */
+  --color-primary: #E63946;
+  --color-primary-dark: #C1121F;
+  --color-primary-light: #FF6B6B;
   
   /* Neutral palette for Swiss minimalism */
   --color-neutral-50: #FAFAFA;
@@ -22,53 +49,378 @@
   --color-neutral-900: #171717;
   --color-neutral-950: #0A0A0A;
   
-  /* Spacing scale for vertical rhythm */
+  /* Semantic colors */
+  --color-background: #FFFFFF;
+  --color-background-dark: #0A0A0A;
+  --color-surface: #FAFAFA;
+  --color-surface-dark: #171717;
+  --color-border: #E5E5E5;
+  --color-border-dark: #404040;
+  
+  /* ----------------------------------------
+     SPACING
+     8px base unit for vertical rhythm
+     ---------------------------------------- */
+  --spacing-0: 0;
+  --spacing-1: 0.25rem;   /* 4px */
+  --spacing-2: 0.5rem;    /* 8px - base unit */
+  --spacing-3: 0.75rem;   /* 12px */
+  --spacing-4: 1rem;      /* 16px */
+  --spacing-5: 1.25rem;   /* 20px */
+  --spacing-6: 1.5rem;    /* 24px */
+  --spacing-8: 2rem;      /* 32px */
+  --spacing-10: 2.5rem;   /* 40px */
+  --spacing-12: 3rem;     /* 48px */
+  --spacing-16: 4rem;     /* 64px */
+  --spacing-20: 5rem;     /* 80px */
+  --spacing-24: 6rem;     /* 96px */
+  --spacing-32: 8rem;     /* 128px */
+  --spacing-40: 10rem;    /* 160px */
   --spacing-section: 6rem;
   --spacing-section-sm: 4rem;
+  
+  /* ----------------------------------------
+     GRID SYSTEM
+     12-column Swiss grid
+     ---------------------------------------- */
+  --grid-gutter: 1.5rem;  /* 24px */
+  --grid-margin: 1.5rem;  /* Mobile margin */
+  --grid-margin-md: 3rem; /* Desktop margin */
+  
+  /* Container max-widths */
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+  --container-2xl: 1440px;
+  
+  /* ----------------------------------------
+     TRANSITIONS & ANIMATIONS
+     Smooth, professional motion
+     ---------------------------------------- */
+  --transition-fast: 150ms;
+  --transition-base: 200ms;
+  --transition-slow: 300ms;
+  --transition-slower: 500ms;
+  
+  --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  
+  /* ----------------------------------------
+     SHADOWS
+     Subtle, architectural shadows
+     ---------------------------------------- */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  
+  /* ----------------------------------------
+     BORDER RADIUS
+     Sharp edges for Swiss style (minimal radius)
+     ---------------------------------------- */
+  --radius-none: 0;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  
+  /* ----------------------------------------
+     Z-INDEX SCALE
+     ---------------------------------------- */
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal-backdrop: 400;
+  --z-modal: 500;
+  --z-tooltip: 600;
 }
 
 /* Dark mode class-based toggle */
 @variant dark (&:where(.dark, .dark *));
 
-/* Base typography styles */
+/* ============================================
+   BASE STYLES
+   ============================================ */
 @layer base {
   html {
-    font-feature-settings: "kern" 1, "liga" 1;
+    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
     text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   
   body {
-    @apply leading-relaxed;
+    @apply leading-relaxed bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100;
+    font-size: 1rem;
+    line-height: 1.625;
   }
   
   /* Swiss-style headings - Bold, clean, no-nonsense */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight leading-tight;
+    @apply font-semibold tracking-tight leading-tight text-neutral-900 dark:text-white;
+    text-wrap: balance;
   }
   
   h1 {
-    @apply text-5xl md:text-6xl lg:text-7xl;
+    @apply text-4xl sm:text-5xl md:text-6xl lg:text-7xl;
+    letter-spacing: -0.025em;
   }
   
   h2 {
-    @apply text-3xl md:text-4xl lg:text-5xl;
+    @apply text-3xl sm:text-4xl md:text-5xl;
+    letter-spacing: -0.02em;
   }
   
   h3 {
-    @apply text-2xl md:text-3xl;
+    @apply text-2xl sm:text-3xl;
   }
   
   h4 {
-    @apply text-xl md:text-2xl;
+    @apply text-xl sm:text-2xl;
   }
   
-  /* Links with Swiss red accent */
+  h5 {
+    @apply text-lg sm:text-xl;
+  }
+  
+  h6 {
+    @apply text-base sm:text-lg font-medium;
+  }
+  
+  /* Paragraphs */
+  p {
+    @apply text-neutral-600 dark:text-neutral-400;
+    text-wrap: pretty;
+  }
+  
+  /* Links - Reset default, style contextually */
   a {
-    @apply text-primary hover:text-primary-dark transition-colors duration-200;
+    @apply text-inherit no-underline transition-colors duration-200;
+  }
+  
+  /* Strong/Bold */
+  strong, b {
+    @apply font-semibold text-neutral-900 dark:text-white;
   }
   
   /* Selection color */
   ::selection {
     @apply bg-primary text-white;
+  }
+  
+  /* Focus styles for accessibility */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary;
+  }
+  
+  /* Smooth scrolling */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+}
+
+/* ============================================
+   COMPONENT UTILITIES
+   ============================================ */
+@layer components {
+  /* Swiss Grid Container */
+  .swiss-container {
+    @apply w-full mx-auto px-6 md:px-12;
+    max-width: var(--container-xl);
+  }
+  
+  .swiss-container-narrow {
+    @apply w-full mx-auto px-6 md:px-12;
+    max-width: var(--container-lg);
+  }
+  
+  /* Section spacing */
+  .swiss-section {
+    @apply py-16 md:py-24;
+  }
+  
+  /* 12-column grid */
+  .swiss-grid {
+    @apply grid grid-cols-4 md:grid-cols-8 lg:grid-cols-12 gap-6;
+  }
+  
+  /* Button base styles (shared) */
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .btn-outline {
+    @apply inline-flex items-center justify-center px-6 py-3 font-medium transition-all duration-200;
+    @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary;
+  }
+  
+  .btn-primary {
+    @apply bg-primary text-white hover:bg-primary-dark active:scale-[0.98];
+  }
+  
+  .btn-secondary {
+    @apply bg-neutral-900 text-white hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100 active:scale-[0.98];
+  }
+  
+  .btn-outline {
+    @apply border-2 border-neutral-900 text-neutral-900 hover:bg-neutral-900 hover:text-white active:scale-[0.98];
+    @apply dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-neutral-900;
+  }
+  
+  /* Text link with underline animation */
+  .link-underline {
+    @apply relative inline-block text-primary;
+  }
+  
+  .link-underline::after {
+    @apply content-[''] absolute left-0 bottom-0 w-full h-0.5 bg-primary origin-left scale-x-0 transition-transform duration-300;
+  }
+  
+  .link-underline:hover::after {
+    @apply scale-x-100;
+  }
+  
+  /* Card */
+  .card {
+    @apply bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800;
+  }
+  
+  /* Divider */
+  .divider {
+    @apply h-px bg-neutral-200 dark:bg-neutral-800;
+  }
+  
+  /* Swiss-style label (uppercase, spaced) */
+  .label-swiss {
+    @apply text-xs font-medium uppercase tracking-wide text-neutral-500 dark:text-neutral-400;
+    letter-spacing: 0.1em;
+  }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+@layer utilities {
+  /* Text balance for headings */
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  /* Text pretty for paragraphs */
+  .text-pretty {
+    text-wrap: pretty;
+  }
+  
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Aspect ratios for images */
+  .aspect-photo {
+    aspect-ratio: 4 / 3;
+  }
+  
+  .aspect-portrait {
+    aspect-ratio: 3 / 4;
+  }
+  
+  .aspect-wide {
+    aspect-ratio: 16 / 9;
+  }
+  
+  .aspect-ultrawide {
+    aspect-ratio: 21 / 9;
+  }
+  
+  /* Animation delays for staggered reveals */
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-400 { animation-delay: 400ms; }
+  .delay-500 { animation-delay: 500ms; }
+  .delay-600 { animation-delay: 600ms; }
+  .delay-700 { animation-delay: 700ms; }
+  .delay-800 { animation-delay: 800ms; }
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-down {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fade-in 0.5s var(--ease-out) forwards;
+  }
+  
+  .animate-fade-up {
+    animation: fade-up 0.6s var(--ease-out) forwards;
+  }
+  
+  .animate-fade-down {
+    animation: fade-down 0.6s var(--ease-out) forwards;
+  }
+  
+  .animate-scale-in {
+    animation: scale-in 0.4s var(--ease-out) forwards;
+  }
+  
+  .animate-slide-in-right {
+    animation: slide-in-right 0.5s var(--ease-out) forwards;
   }
 }
