@@ -1,16 +1,26 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { useTranslations } from '../shared/i18n/translations';
 
+const t = useTranslations('es');
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title="Arquitecto | Consultoría Arquitectónica" lang="es">
+  <main class="min-h-screen">
+    <!-- Placeholder: Components will be added in subsequent tasks -->
+    <section class="h-screen flex items-center justify-center">
+      <div class="text-center">
+        <h1 class="mb-4">{t('hero.title')}</h1>
+        <p class="text-xl text-neutral-600 dark:text-neutral-400 mb-8">
+          {t('hero.subtitle')}
+        </p>
+        <a 
+          href="#servicios" 
+          class="inline-block px-8 py-4 bg-primary text-white font-medium hover:bg-primary-dark transition-colors"
+        >
+          {t('hero.cta')}
+        </a>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
