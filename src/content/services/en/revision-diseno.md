@@ -26,3 +26,4 @@ draft: false
 
 Technical report with project SWOT analysis, risk identification, and optimization proposals prioritized by impact.
 
+

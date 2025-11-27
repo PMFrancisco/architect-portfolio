@@ -26,3 +26,4 @@ Un estudio de factibilidad completo analiza todos los factores que pueden afecta
 - Optimiza el programa arquitectónico según el potencial real
 - Facilita la obtención de financiamiento
 
+

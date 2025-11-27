@@ -26,3 +26,4 @@ A complete feasibility study analyzes all factors that can affect the success of
 - Optimizes the architectural program according to real potential
 - Facilitates financing acquisition
 
+

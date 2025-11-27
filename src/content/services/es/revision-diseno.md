@@ -26,3 +26,4 @@ draft: false
 
 Informe técnico con análisis FODA del proyecto, identificación de riesgos y propuestas de optimización priorizadas por impacto.
 
+

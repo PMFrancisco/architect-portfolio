@@ -25,3 +25,4 @@ Utilizamos metodologías ágiles adaptadas a la construcción, con sprints de re
 - Microsoft Project para cronogramas
 - Dashboard personalizado de KPIs
 
+

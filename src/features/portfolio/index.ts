@@ -9,3 +9,4 @@ export const components = {
   ProjectDetail: './ProjectDetail.astro',
 } as const;
 
+
