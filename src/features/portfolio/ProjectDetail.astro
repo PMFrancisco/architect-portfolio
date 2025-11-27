@@ -9,6 +9,7 @@ import Grid from '../../shared/ui/Grid.astro';
 import Typography from '../../shared/ui/Typography.astro';
 import Button from '../../shared/ui/Button.astro';
 import Icon from '../../shared/ui/Icon.astro';
+import ScrollReveal from '../../shared/ui/ScrollReveal.astro';
 import type { Lang } from '../../shared/i18n/translations';
 
 interface Props {
@@ -116,15 +117,15 @@ const metrics = [
     <Container>
       <Grid>
         <!-- Back link -->
-        <div class="col-span-4 md:col-span-8 lg:col-span-12 mb-8">
+        <ScrollReveal animation="fade" class="col-span-4 md:col-span-8 lg:col-span-12 mb-8">
           <Button href={backHref} variant="ghost" size="small">
             <Icon name="arrow-left" size="small" class="mr-2" />
             {t.backToProjects}
           </Button>
-        </div>
+        </ScrollReveal>
 
         <!-- Title & Description -->
-        <div class="col-span-4 md:col-span-5 lg:col-span-7">
+        <ScrollReveal animation="fade-up" class="col-span-4 md:col-span-5 lg:col-span-7">
           <Typography as="p" variant="label" color="muted" class="mb-4">
             {categoryLabel} · {year}
           </Typography>
@@ -155,10 +156,10 @@ const metrics = [
               ))}
             </div>
           )}
-        </div>
+        </ScrollReveal>
 
         <!-- Sidebar: Client & Location -->
-        <div class="col-span-4 md:col-span-3 lg:col-span-4 lg:col-start-9">
+        <ScrollReveal animation="fade-left" delay={200} class="col-span-4 md:col-span-3 lg:col-span-4 lg:col-start-9">
           <div class="space-y-6">
             <div>
               <Typography as="p" variant="label" color="muted" class="mb-1">
@@ -188,7 +189,7 @@ const metrics = [
               </Typography>
             </div>
           </div>
-        </div>
+        </ScrollReveal>
       </Grid>
     </Container>
   </Section>
@@ -199,25 +200,25 @@ const metrics = [
       <Container>
         <Grid>
           {challenge && (
-            <div class="col-span-4 md:col-span-4 lg:col-span-5">
+            <ScrollReveal animation="fade-right" class="col-span-4 md:col-span-4 lg:col-span-5">
               <Typography as="h3" variant="h3" class="mb-4">
                 {t.challenge}
               </Typography>
               <Typography as="p" variant="body" color="muted">
                 {challenge}
               </Typography>
-            </div>
+            </ScrollReveal>
           )}
           
           {solution && (
-            <div class="col-span-4 md:col-span-4 lg:col-span-5 lg:col-start-7">
+            <ScrollReveal animation="fade-left" delay={150} class="col-span-4 md:col-span-4 lg:col-span-5 lg:col-start-7">
               <Typography as="h3" variant="h3" class="mb-4">
                 {t.solution}
               </Typography>
               <Typography as="p" variant="body" color="muted">
                 {solution}
               </Typography>
-            </div>
+            </ScrollReveal>
           )}
         </Grid>
       </Container>
@@ -230,17 +231,19 @@ const metrics = [
       <Container>
         <div class="space-y-6">
           {images.slice(1).map((image, index) => (
-            <div class:list={[
-              'bg-neutral-200 dark:bg-neutral-800',
-              index % 2 === 0 ? 'aspect-wide' : 'aspect-photo'
-            ]}>
-              <img 
-                src={image} 
-                alt={`${title} - ${index + 2}`}
-                class="w-full h-full object-cover"
-                loading="lazy"
-              />
-            </div>
+            <ScrollReveal animation="fade-up" delay={index * 100}>
+              <div class:list={[
+                'bg-neutral-200 dark:bg-neutral-800',
+                index % 2 === 0 ? 'aspect-wide' : 'aspect-photo'
+              ]}>
+                <img 
+                  src={image} 
+                  alt={`${title} - ${index + 2}`}
+                  class="w-full h-full object-cover"
+                  loading="lazy"
+                />
+              </div>
+            </ScrollReveal>
           ))}
         </div>
       </Container>
