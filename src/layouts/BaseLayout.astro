@@ -5,13 +5,37 @@ import { getLangFromUrl, useTranslations, type Lang } from '../shared/i18n/trans
 interface Props {
   title: string;
   description?: string;
+  image?: string;
   lang?: Lang;
+  type?: 'website' | 'article';
+  publishedDate?: string;
+  author?: string;
 }
 
 const currentLang = Astro.props.lang || getLangFromUrl(Astro.url);
 const t = useTranslations(currentLang);
 
-const { title, description = 'Consultoría arquitectónica profesional' } = Astro.props;
+const { 
+  title, 
+  description = currentLang === 'es' 
+    ? 'Consultoría arquitectónica profesional especializada en estrategia de diseño, gestión de proyectos y cumplimiento normativo.'
+    : 'Professional architectural consulting specialized in design strategy, project management, and regulatory compliance.',
+  image = '/og-image.jpg',
+  type = 'website',
+  publishedDate,
+  author = 'Arquitecto',
+} = Astro.props;
+
+// Site configuration
+const siteConfig = {
+  name: 'Arquitecto',
+  url: Astro.site?.toString() || 'https://arquitecto.com',
+  twitter: '@arquitecto',
+};
+
+// Build full URLs
+const canonicalURL = new URL(Astro.url.pathname, siteConfig.url);
+const ogImageURL = new URL(image, siteConfig.url);
 ---
 
 <!doctype html>
@@ -19,18 +43,64 @@ const { title, description = 'Consultoría arquitectónica profesional' } = Astr
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Primary Meta Tags -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
     <meta name="description" content={description} />
+    <meta name="author" content={author} />
     <meta name="generator" content={Astro.generator} />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalURL} />
+    
+    <!-- Alternate language versions -->
+    <link rel="alternate" hreflang="es" href={new URL(Astro.url.pathname.replace(/^\/en/, '/es'), siteConfig.url)} />
+    <link rel="alternate" hreflang="en" href={new URL(Astro.url.pathname.replace(/^\/es/, '/en'), siteConfig.url)} />
+    <link rel="alternate" hreflang="x-default" href={new URL('/es/', siteConfig.url)} />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageURL} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content={siteConfig.name} />
+    <meta property="og:locale" content={currentLang === 'es' ? 'es_ES' : 'en_US'} />
+    {currentLang === 'es' && <meta property="og:locale:alternate" content="en_US" />}
+    {currentLang === 'en' && <meta property="og:locale:alternate" content="es_ES" />}
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageURL} />
+    <meta name="twitter:site" content={siteConfig.twitter} />
+    <meta name="twitter:creator" content={siteConfig.twitter} />
+    
+    <!-- Article specific (for blog posts / projects) -->
+    {type === 'article' && publishedDate && (
+      <meta property="article:published_time" content={publishedDate} />
+    )}
+    {type === 'article' && (
+      <meta property="article:author" content={author} />
+    )}
     
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     
     <!-- Fonts - Using system fonts for Swiss style (Helvetica-like) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
     
-    <title>{title}</title>
+    <!-- Theme color for mobile browsers -->
+    <meta name="theme-color" content="#E63946" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
     
     <!-- Dark mode script (runs before page render to prevent flash) -->
     <script is:inline>

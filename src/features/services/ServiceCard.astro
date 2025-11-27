@@ -1,0 +1,105 @@
+---
+/**
+ * ServiceCard Component
+ * Swiss-style service card with icon and description
+ */
+import Typography from '../../shared/ui/Typography.astro';
+import Icon from '../../shared/ui/Icon.astro';
+import type { Lang } from '../../shared/i18n/translations';
+
+type IconName = 'clipboard-check' | 'calendar-check' | 'search' | 'shield-check' | 'building' | 'ruler';
+
+interface Props {
+  title: string;
+  slug: string;
+  shortDescription: string;
+  icon: string;
+  features?: string[];
+  lang: Lang;
+  variant?: 'default' | 'compact' | 'featured';
+  class?: string;
+}
+
+const { 
+  title, 
+  slug,
+  shortDescription, 
+  icon,
+  features = [],
+  lang,
+  variant = 'default',
+  class: className = '' 
+} = Astro.props;
+
+// Map icon string to valid icon name
+const iconMap: Record<string, IconName> = {
+  'clipboard-check': 'clipboard-check',
+  'calendar-check': 'calendar-check',
+  'search': 'search',
+  'shield-check': 'shield-check',
+  'building': 'building',
+  'ruler': 'ruler',
+};
+
+const iconName = iconMap[icon] || 'building';
+const learnMoreText = lang === 'es' ? 'Saber más' : 'Learn more';
+---
+
+<div 
+  class:list={[
+    'group h-full transition-all duration-300',
+    variant === 'default' && 'p-6 bg-white dark:bg-neutral-800 hover:shadow-lg',
+    variant === 'compact' && 'p-4 bg-white dark:bg-neutral-800',
+    variant === 'featured' && 'p-8 bg-white dark:bg-neutral-800 border-l-4 border-primary',
+    className
+  ]}
+>
+  <!-- Icon -->
+  <div class:list={[
+    'flex items-center justify-center text-primary mb-4',
+    variant === 'featured' ? 'w-16 h-16 bg-primary/10' : 'w-12 h-12 bg-primary/10'
+  ]}>
+    <Icon 
+      name={iconName} 
+      size={variant === 'featured' ? 'xlarge' : 'large'} 
+    />
+  </div>
+  
+  <!-- Title -->
+  <Typography 
+    as="h3" 
+    variant={variant === 'featured' ? 'h3' : 'h4'} 
+    class="mb-2 group-hover:text-primary transition-colors"
+  >
+    {title}
+  </Typography>
+  
+  <!-- Description -->
+  <Typography as="p" variant="body" color="muted" class="mb-4">
+    {shortDescription}
+  </Typography>
+  
+  <!-- Features list (if provided and not compact) -->
+  {variant !== 'compact' && features.length > 0 && (
+    <ul class="space-y-2 mb-4">
+      {features.slice(0, 4).map((feature) => (
+        <li class="flex items-start gap-2 text-sm text-neutral-600 dark:text-neutral-400">
+          <span class="text-primary mt-1">•</span>
+          {feature}
+        </li>
+      ))}
+    </ul>
+  )}
+  
+  <!-- Learn more link -->
+  {variant !== 'compact' && (
+    <a 
+      href={lang === 'es' ? `#${slug}` : `#${slug}`}
+      class="inline-flex items-center gap-1 text-sm font-medium text-primary hover:gap-2 transition-all"
+    >
+      {learnMoreText}
+      <Icon name="arrow-right" size="small" />
+    </a>
+  )}
+</div>
+

@@ -1,0 +1,96 @@
+---
+/**
+ * CallToAction Component
+ * Swiss-style CTA section for conversions
+ */
+import Container from '../../shared/ui/Container.astro';
+import Typography from '../../shared/ui/Typography.astro';
+import Button from '../../shared/ui/Button.astro';
+import type { Lang } from '../../shared/i18n/translations';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description?: string;
+  primaryButtonText: string;
+  primaryButtonHref: string;
+  secondaryButtonText?: string;
+  secondaryButtonHref?: string;
+  variant?: 'default' | 'dark' | 'primary';
+  class?: string;
+}
+
+const { 
+  lang,
+  title,
+  description,
+  primaryButtonText,
+  primaryButtonHref,
+  secondaryButtonText,
+  secondaryButtonHref,
+  variant = 'default',
+  class: className = '' 
+} = Astro.props;
+
+const bgClasses = {
+  default: 'bg-neutral-50 dark:bg-neutral-900',
+  dark: 'bg-neutral-900 dark:bg-neutral-950',
+  primary: 'bg-primary',
+};
+
+const textClasses = {
+  default: '',
+  dark: 'text-white',
+  primary: 'text-white',
+};
+---
+
+<section class:list={[bgClasses[variant], 'py-16 md:py-24', className]}>
+  <Container>
+    <div class:list={['text-center max-w-3xl mx-auto', textClasses[variant]]}>
+      <Typography 
+        as="h2" 
+        variant="h2" 
+        class:list={[
+          'mb-4',
+          variant !== 'default' && 'text-white'
+        ]}
+      >
+        {title}
+      </Typography>
+      
+      {description && (
+        <Typography 
+          as="p" 
+          variant="body-large" 
+          class:list={[
+            'mb-8',
+            variant === 'default' ? 'text-neutral-600 dark:text-neutral-400' : 'text-white/80'
+          ]}
+        >
+          {description}
+        </Typography>
+      )}
+      
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <Button 
+          href={primaryButtonHref}
+          variant={variant === 'primary' ? 'secondary' : 'primary'}
+        >
+          {primaryButtonText}
+        </Button>
+        
+        {secondaryButtonText && secondaryButtonHref && (
+          <Button 
+            href={secondaryButtonHref}
+            variant={variant === 'default' ? 'outline' : 'ghost'}
+            class={variant !== 'default' ? 'text-white border-white hover:bg-white hover:text-neutral-900' : ''}
+          >
+            {secondaryButtonText}
+          </Button>
+        )}
+      </div>
+    </div>
+  </Container>
+</section>
+

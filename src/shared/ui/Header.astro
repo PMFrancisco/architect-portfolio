@@ -1,0 +1,128 @@
+---
+/**
+ * Header Component
+ * Swiss-style navigation header with mobile menu
+ */
+import Container from './Container.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import LanguagePicker from './LanguagePicker.astro';
+import Icon from './Icon.astro';
+import { useTranslations, type Lang } from '../i18n/translations';
+
+interface Props {
+  lang: Lang;
+  currentPath?: string;
+}
+
+const { lang, currentPath = '/' } = Astro.props;
+const t = useTranslations(lang);
+
+// Check if we are on the home page (root for that language)
+const isHome = currentPath === `/${lang}/` || currentPath === `/${lang}`;
+
+// If not on home page, prepend the language home URL to anchors
+const getHref = (anchor: string) => isHome ? anchor : `/${lang}/${anchor}`;
+
+const navLinks = [
+  { href: getHref('#servicios'), label: t('nav.services') },
+  { href: getHref('#proyectos'), label: t('nav.projects') },
+  { href: getHref('#sobre-mi'), label: t('nav.about') },
+  { href: getHref('#contacto'), label: t('nav.contact') },
+];
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800">
+  <Container>
+    <nav class="flex items-center justify-between h-16 md:h-20">
+      <!-- Logo -->
+      <a 
+        href={lang === 'es' ? '/' : `/${lang}/`}
+        class="text-lg md:text-xl font-semibold tracking-tight text-neutral-900 dark:text-white hover:text-primary dark:hover:text-primary transition-colors"
+      >
+        Arquitecto
+      </a>
+
+      <!-- Desktop Navigation -->
+      <div class="hidden md:flex items-center gap-8">
+        {navLinks.map((link) => (
+          <a
+            href={link.href}
+            class="text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
+          >
+            {link.label}
+          </a>
+        ))}
+      </div>
+
+      <!-- Right side: Language + Theme + Mobile Menu -->
+      <div class="flex items-center gap-3">
+        <LanguagePicker currentLang={lang} currentPath={currentPath} class="hidden sm:flex" />
+        <ThemeToggle />
+        
+        <!-- Mobile Menu Button -->
+        <button
+          id="mobile-menu-toggle"
+          type="button"
+          class="md:hidden p-2.5 rounded-sm bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
+          aria-label="Toggle menu"
+          aria-expanded="false"
+        >
+          <Icon name="menu" class="menu-open-icon" />
+          <Icon name="x" class="menu-close-icon hidden" />
+        </button>
+      </div>
+    </nav>
+  </Container>
+
+  <!-- Mobile Menu -->
+  <div 
+    id="mobile-menu"
+    class="md:hidden hidden absolute top-full left-0 right-0 bg-white dark:bg-neutral-950 border-b border-neutral-200 dark:border-neutral-800"
+  >
+    <Container>
+      <div class="py-4 space-y-1">
+        {navLinks.map((link) => (
+          <a
+            href={link.href}
+            class="block py-3 text-base font-medium text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
+          >
+            {link.label}
+          </a>
+        ))}
+        <div class="pt-4 border-t border-neutral-200 dark:border-neutral-800">
+          <LanguagePicker currentLang={lang} currentPath={currentPath} class="sm:hidden" />
+        </div>
+      </div>
+    </Container>
+  </div>
+</header>
+
+<script>
+  function initMobileMenu() {
+    const menuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const openIcon = menuToggle?.querySelector('.menu-open-icon');
+    const closeIcon = menuToggle?.querySelector('.menu-close-icon');
+
+    menuToggle?.addEventListener('click', () => {
+      const isOpen = mobileMenu?.classList.toggle('hidden');
+      openIcon?.classList.toggle('hidden');
+      closeIcon?.classList.toggle('hidden');
+      menuToggle.setAttribute('aria-expanded', String(!isOpen));
+    });
+
+    // Close menu when clicking a link
+    mobileMenu?.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+        openIcon?.classList.remove('hidden');
+        closeIcon?.classList.add('hidden');
+        menuToggle?.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+
+  initMobileMenu();
+  document.addEventListener('astro:after-swap', initMobileMenu);
+</script>
+

@@ -107,9 +107,8 @@ export function useTranslations(lang: Lang) {
 }
 
 export function getLocalizedPath(path: string, lang: Lang): string {
-  if (lang === defaultLang) {
-    return path;
-  }
-  return `/${lang}${path}`;
+  // Always include the language prefix since we use [lang] dynamic routes
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  return `/${lang}${cleanPath}`;
 }
 

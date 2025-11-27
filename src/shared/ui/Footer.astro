@@ -1,0 +1,121 @@
+---
+/**
+ * Footer Component
+ * Swiss-style footer with contact info and social links
+ */
+import Container from './Container.astro';
+import Icon from './Icon.astro';
+import { useTranslations, type Lang } from '../i18n/translations';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const currentYear = new Date().getFullYear();
+
+const socialLinks = [
+  { name: 'LinkedIn', href: 'https://linkedin.com', icon: 'linkedin' as const },
+  { name: 'Instagram', href: 'https://instagram.com', icon: 'instagram' as const },
+];
+
+const contactInfo = [
+  { icon: 'mail' as const, text: 'contacto@arquitecto.com', href: 'mailto:contacto@arquitecto.com' },
+  { icon: 'phone' as const, text: '+34 91 123 4567', href: 'tel:+34911234567' },
+  { icon: 'map-pin' as const, text: 'Madrid, España', href: '#' },
+];
+---
+
+<footer class="bg-neutral-900 dark:bg-neutral-950 text-white py-16 md:py-20">
+  <Container>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 md:gap-8">
+      <!-- Brand -->
+      <div class="lg:col-span-2">
+        <a href="/" class="text-2xl font-semibold tracking-tight hover:text-primary transition-colors">
+          Arquitecto
+        </a>
+        <p class="mt-4 text-neutral-400 max-w-md">
+          {lang === 'es' 
+            ? 'Consultoría arquitectónica especializada en estrategia de diseño, gestión de proyectos y cumplimiento normativo.'
+            : 'Specialized architectural consulting in design strategy, project management, and regulatory compliance.'}
+        </p>
+        
+        <!-- Social Links -->
+        <div class="flex gap-4 mt-6">
+          {socialLinks.map((social) => (
+            <a
+              href={social.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="p-2 bg-neutral-800 hover:bg-neutral-700 rounded-sm transition-colors"
+              aria-label={social.name}
+            >
+              <Icon name={social.icon} />
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <h4 class="text-sm font-medium uppercase tracking-widest text-neutral-400 mb-4">
+          {t('nav.contact')}
+        </h4>
+        <ul class="space-y-3">
+          {contactInfo.map((item) => (
+            <li>
+              <a 
+                href={item.href}
+                class="flex items-center gap-3 text-neutral-300 hover:text-white transition-colors"
+              >
+                <Icon name={item.icon} size="small" class="text-neutral-500" />
+                <span class="text-sm">{item.text}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h4 class="text-sm font-medium uppercase tracking-widest text-neutral-400 mb-4">
+          {lang === 'es' ? 'Enlaces' : 'Links'}
+        </h4>
+        <ul class="space-y-3">
+          <li>
+            <a href="#servicios" class="text-sm text-neutral-300 hover:text-white transition-colors">
+              {t('nav.services')}
+            </a>
+          </li>
+          <li>
+            <a href="#proyectos" class="text-sm text-neutral-300 hover:text-white transition-colors">
+              {t('nav.projects')}
+            </a>
+          </li>
+          <li>
+            <a href="#sobre-mi" class="text-sm text-neutral-300 hover:text-white transition-colors">
+              {t('nav.about')}
+            </a>
+          </li>
+          <li>
+            <a href="#contacto" class="text-sm text-neutral-300 hover:text-white transition-colors">
+              {t('nav.contact')}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="mt-12 pt-8 border-t border-neutral-800 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <p class="text-sm text-neutral-500">
+        © {currentYear} Arquitecto. {t('footer.rights')}.
+      </p>
+      <p class="text-xs text-neutral-600">
+        {lang === 'es' ? 'Diseñado con estilo suizo' : 'Designed with Swiss style'}
+      </p>
+    </div>
+  </Container>
+</footer>
+

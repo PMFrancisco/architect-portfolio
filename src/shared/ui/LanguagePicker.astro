@@ -1,0 +1,72 @@
+---
+/**
+ * LanguagePicker Component
+ * Language switcher for i18n support
+ */
+import { languages, type Lang } from '../i18n/translations';
+
+interface Props {
+  currentLang: Lang;
+  currentPath?: string;
+  class?: string;
+}
+
+const { currentLang, currentPath = '/', class: className = '' } = Astro.props;
+
+// Path segment translations between languages
+const pathTranslations: Record<string, Record<Lang, string>> = {
+  proyectos: { es: 'proyectos', en: 'projects' },
+  projects: { es: 'proyectos', en: 'projects' },
+  servicios: { es: 'servicios', en: 'services' },
+  services: { es: 'servicios', en: 'services' },
+};
+
+// Get the path without the language prefix
+const pathWithoutLang = currentPath.replace(/^\/(es|en)/, '') || '/';
+
+// Translate path segments for a target language
+function translatePath(path: string, targetLang: Lang): string {
+  const segments = path.split('/').filter(Boolean);
+  const translatedSegments = segments.map(segment => {
+    const translation = pathTranslations[segment];
+    return translation ? translation[targetLang] : segment;
+  });
+  return '/' + translatedSegments.join('/');
+}
+
+// Generate links for each language
+const languageLinks = Object.entries(languages).map(([code, name]) => {
+  const lang = code as Lang;
+  const translatedPath = translatePath(pathWithoutLang, lang);
+  return {
+    code: lang,
+    name,
+    href: `/${lang}${translatedPath}`,
+    isCurrent: code === currentLang,
+  };
+});
+---
+
+<div class:list={['flex items-center gap-1', className]}>
+  {languageLinks.map((lang, index) => (
+    <>
+      {index > 0 && (
+        <span class="text-neutral-300 dark:text-neutral-600 select-none">/</span>
+      )}
+      <a
+        href={lang.href}
+        class:list={[
+          'px-1.5 py-0.5 text-sm font-medium uppercase tracking-wide transition-colors',
+          lang.isCurrent 
+            ? 'text-neutral-900 dark:text-white' 
+            : 'text-neutral-400 dark:text-neutral-500 hover:text-neutral-900 dark:hover:text-white'
+        ]}
+        aria-current={lang.isCurrent ? 'page' : undefined}
+        aria-label={`Switch to ${lang.name}`}
+      >
+        {lang.code}
+      </a>
+    </>
+  ))}
+</div>
+

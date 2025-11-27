@@ -1,0 +1,181 @@
+---
+/**
+ * Services Listing Page (All Languages)
+ * Single file handles both ES and EN
+ */
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../shared/ui/Header.astro';
+import Footer from '../../../shared/ui/Footer.astro';
+import Container from '../../../shared/ui/Container.astro';
+import Section from '../../../shared/ui/Section.astro';
+import Grid from '../../../shared/ui/Grid.astro';
+import Typography from '../../../shared/ui/Typography.astro';
+import Icon from '../../../shared/ui/Icon.astro';
+import Button from '../../../shared/ui/Button.astro';
+import ScrollReveal from '../../../shared/ui/ScrollReveal.astro';
+import { type Lang } from '../../../shared/i18n/translations';
+
+// Generate static paths for all language + services path combinations
+export async function getStaticPaths() {
+  return [
+    { params: { lang: 'es', services: 'servicios' } },
+    { params: { lang: 'en', services: 'services' } },
+  ];
+}
+
+const { lang, services: servicesPath } = Astro.params as { lang: Lang; services: string };
+
+// Get services for the current language
+const allServices = await getCollection('services', ({ data }) => {
+  return data.lang === lang && !data.draft;
+});
+
+// Sort by order
+const services = allServices.sort((a, b) => a.data.order - b.data.order);
+
+// Localized content
+const content = {
+  es: {
+    title: 'Servicios | Arquitecto',
+    label: 'Consultoría Especializada',
+    heading: 'Servicios de Consultoría',
+    description: 'Ofrezco servicios especializados de consultoría arquitectónica para cada etapa de tu proyecto, desde la concepción hasta la entrega final.',
+    cta: 'Solicitar consulta',
+    features: 'Incluye',
+  },
+  en: {
+    title: 'Services | Architect',
+    label: 'Specialized Consulting',
+    heading: 'Consulting Services',
+    description: 'I offer specialized architectural consulting services for every stage of your project, from conception to final delivery.',
+    cta: 'Request consultation',
+    features: 'Includes',
+  },
+};
+
+const c = content[lang];
+
+// Helper to build URLs with language prefix
+const buildUrl = (path: string) => `/${lang}${path}`;
+---
+
+<BaseLayout title={c.title} description={c.description} lang={lang}>
+  <Header lang={lang} currentPath={buildUrl(`/${servicesPath}`)} />
+  
+  <main class="pt-16 md:pt-20">
+    <!-- Hero -->
+    <Section spacing="large">
+      <Container>
+        <ScrollReveal>
+          <div class="max-w-3xl">
+            <Typography as="p" variant="label" color="muted" class="mb-4">
+              {c.label}
+            </Typography>
+            <Typography as="h1" variant="h1" class="mb-6">
+              {c.heading}
+            </Typography>
+            <Typography as="p" variant="body-large" color="muted">
+              {c.description}
+            </Typography>
+          </div>
+        </ScrollReveal>
+      </Container>
+    </Section>
+
+    <!-- Services List -->
+    <Section spacing="large" background="muted">
+      <Container>
+        <div class="space-y-8 md:space-y-12">
+          {services.map((service, index) => (
+            <ScrollReveal 
+              animation={index % 2 === 0 ? 'fade-right' : 'fade-left'} 
+              delay={index * 100}
+            >
+              <article class="bg-white dark:bg-neutral-900 p-6 md:p-10 lg:p-12">
+                <Grid>
+                  <div class="col-span-4 md:col-span-3 lg:col-span-4 flex flex-col justify-center mb-6 md:mb-0">
+                    <!-- Icon -->
+                    <div class="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center bg-primary/10 text-primary mb-6">
+                      <Icon name={service.data.icon as any} size="xlarge" />
+                    </div>
+                    
+                    <!-- Order number -->
+                    <Typography as="span" variant="label" color="muted" class="mb-2">
+                      0{service.data.order}
+                    </Typography>
+                    
+                    <!-- Title -->
+                    <Typography as="h2" variant="h2" class="mb-4">
+                      {service.data.title}
+                    </Typography>
+                    
+                    <!-- Short description -->
+                    <Typography as="p" variant="body-large" color="muted">
+                      {service.data.shortDescription}
+                    </Typography>
+                  </div>
+                  
+                  <div class="col-span-4 md:col-span-5 lg:col-span-7 lg:col-start-6">
+                    <!-- Full description -->
+                    {service.data.fullDescription && (
+                      <Typography as="p" variant="body" color="muted" class="mb-8">
+                        {service.data.fullDescription}
+                      </Typography>
+                    )}
+                    
+                    <!-- Features -->
+                    {service.data.features && service.data.features.length > 0 && (
+                      <div>
+                        <Typography as="h4" variant="label" class="mb-4">
+                          {c.features}
+                        </Typography>
+                        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          {service.data.features.map((feature) => (
+                            <li class="flex items-start gap-3">
+                              <div class="w-5 h-5 flex items-center justify-center bg-primary/10 text-primary flex-shrink-0 mt-0.5">
+                                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
+                              </div>
+                              <Typography as="span" variant="body" color="muted">
+                                {feature}
+                              </Typography>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </Grid>
+              </article>
+            </ScrollReveal>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- CTA Section -->
+    <Section spacing="large">
+      <Container narrow>
+        <ScrollReveal class="text-center">
+          <Typography as="h2" variant="h2" class="mb-6">
+            {lang === 'es' ? '¿Listo para empezar?' : 'Ready to get started?'}
+          </Typography>
+          <Typography as="p" variant="body-large" color="muted" class="mb-8 max-w-xl mx-auto">
+            {lang === 'es' 
+              ? 'Agenda una consulta inicial sin compromiso para discutir tu proyecto y cómo puedo ayudarte.'
+              : 'Schedule a no-obligation initial consultation to discuss your project and how I can help.'}
+          </Typography>
+          <Button href={buildUrl('/#contacto')} variant="primary" size="large">
+            {c.cta}
+            <Icon name="arrow-right" size="small" class="ml-2" />
+          </Button>
+        </ScrollReveal>
+      </Container>
+    </Section>
+  </main>
+
+  <Footer lang={lang} />
+</BaseLayout>
+

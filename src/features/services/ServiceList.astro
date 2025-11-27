@@ -1,0 +1,64 @@
+---
+/**
+ * ServiceList Component
+ * Grid layout for displaying service cards
+ */
+import Grid from '../../shared/ui/Grid.astro';
+import ServiceCard from './ServiceCard.astro';
+import type { Lang } from '../../shared/i18n/translations';
+
+interface Service {
+  id: string;
+  data: {
+    title: string;
+    slug: string;
+    shortDescription: string;
+    icon: string;
+    features?: string[];
+    order: number;
+  };
+}
+
+interface Props {
+  services: Service[];
+  lang: Lang;
+  variant?: 'default' | 'compact';
+  columns?: 2 | 3 | 4;
+  class?: string;
+}
+
+const { 
+  services, 
+  lang, 
+  variant = 'default',
+  columns = 4,
+  class: className = '' 
+} = Astro.props;
+
+// Sort by order
+const sortedServices = [...services].sort((a, b) => a.data.order - b.data.order);
+
+// Column span based on columns prop
+const colSpanClass = {
+  2: 'col-span-4 md:col-span-4 lg:col-span-6',
+  3: 'col-span-4 md:col-span-4 lg:col-span-4',
+  4: 'col-span-4 md:col-span-4 lg:col-span-3',
+};
+---
+
+<Grid cols={12} gap="default" class={className}>
+  {sortedServices.map((service) => (
+    <div class={colSpanClass[columns]}>
+      <ServiceCard
+        title={service.data.title}
+        slug={service.data.slug}
+        shortDescription={service.data.shortDescription}
+        icon={service.data.icon}
+        features={service.data.features}
+        lang={lang}
+        variant={variant}
+      />
+    </div>
+  ))}
+</Grid>
+

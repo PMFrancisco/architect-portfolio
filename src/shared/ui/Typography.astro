@@ -1,0 +1,59 @@
+---
+/**
+ * Typography Component
+ * Swiss-style typography with consistent sizing and spacing
+ */
+interface Props {
+  as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span' | 'div';
+  variant?: 'display' | 'h1' | 'h2' | 'h3' | 'h4' | 'body' | 'body-large' | 'small' | 'label';
+  class?: string;
+  color?: 'default' | 'muted' | 'primary' | 'inherit';
+  weight?: 'normal' | 'medium' | 'semibold' | 'bold';
+}
+
+const { 
+  as: Tag = 'p', 
+  variant = 'body',
+  class: className = '',
+  color = 'default',
+  weight
+} = Astro.props;
+
+const variantClasses = {
+  display: 'text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-none',
+  h1: 'text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tight leading-tight',
+  h2: 'text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight leading-tight',
+  h3: 'text-2xl sm:text-3xl font-semibold tracking-tight leading-tight',
+  h4: 'text-xl sm:text-2xl font-semibold tracking-tight leading-snug',
+  body: 'text-base leading-relaxed',
+  'body-large': 'text-lg md:text-xl leading-relaxed',
+  small: 'text-sm leading-relaxed',
+  label: 'text-xs font-medium uppercase tracking-widest',
+};
+
+const colorClasses = {
+  default: 'text-neutral-900 dark:text-neutral-100',
+  muted: 'text-neutral-600 dark:text-neutral-400',
+  primary: 'text-primary',
+  inherit: 'text-inherit',
+};
+
+const weightClasses = {
+  normal: 'font-normal',
+  medium: 'font-medium',
+  semibold: 'font-semibold',
+  bold: 'font-bold',
+};
+---
+
+<Tag 
+  class:list={[
+    variantClasses[variant],
+    colorClasses[color],
+    weight && weightClasses[weight],
+    className
+  ]}
+>
+  <slot />
+</Tag>
+

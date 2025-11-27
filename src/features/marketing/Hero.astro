@@ -1,0 +1,111 @@
+---
+/**
+ * Hero Component
+ * Swiss-style hero section with animated entrance
+ */
+import Container from '../../shared/ui/Container.astro';
+import Grid from '../../shared/ui/Grid.astro';
+import Typography from '../../shared/ui/Typography.astro';
+import Button from '../../shared/ui/Button.astro';
+import { useTranslations, type Lang } from '../../shared/i18n/translations';
+
+interface Props {
+  lang: Lang;
+  backgroundImage?: string;
+  class?: string;
+}
+
+const { lang, backgroundImage, class: className = '' } = Astro.props;
+const t = useTranslations(lang);
+
+const label = lang === 'es' ? 'Consultor Externo' : 'External Consultant';
+---
+
+<section 
+  class:list={[
+    'relative min-h-[calc(100vh-5rem)] flex items-center',
+    className
+  ]}
+>
+  <!-- Background Image (optional) -->
+  {backgroundImage && (
+    <div class="absolute inset-0 z-0">
+      <img 
+        src={backgroundImage} 
+        alt="" 
+        class="w-full h-full object-cover"
+        aria-hidden="true"
+      />
+      <div class="absolute inset-0 bg-white/80 dark:bg-neutral-950/80" />
+    </div>
+  )}
+
+  <Container class="relative z-10">
+    <Grid>
+      <div class="col-span-4 md:col-span-6 md:col-start-2 lg:col-span-8 lg:col-start-3 text-center">
+        <!-- Label -->
+        <Typography 
+          as="p" 
+          variant="label" 
+          color="muted" 
+          class="mb-6 animate-fade-up opacity-0"
+          style="animation-delay: 100ms;"
+        >
+          {label}
+        </Typography>
+        
+        <!-- Main Headline -->
+        <Typography 
+          as="h1" 
+          variant="h1" 
+          class="mb-6 animate-fade-up opacity-0"
+          style="animation-delay: 200ms;"
+        >
+          {t('hero.title')}
+        </Typography>
+        
+        <!-- Subtitle -->
+        <Typography 
+          as="p" 
+          variant="body-large" 
+          color="muted" 
+          class="mb-10 animate-fade-up opacity-0"
+          style="animation-delay: 300ms;"
+        >
+          {t('hero.subtitle')}
+        </Typography>
+        
+        <!-- CTA Buttons -->
+        <div 
+          class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up opacity-0"
+          style="animation-delay: 400ms;"
+        >
+          <Button href="#servicios" variant="primary">
+            {t('hero.cta')}
+          </Button>
+          <Button href="#proyectos" variant="outline">
+            {t('projects.viewAll')}
+          </Button>
+        </div>
+      </div>
+    </Grid>
+  </Container>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+    <svg 
+      class="w-6 h-6 text-neutral-400" 
+      fill="none" 
+      viewBox="0 0 24 24" 
+      stroke="currentColor"
+    >
+      <path 
+        stroke-linecap="round" 
+        stroke-linejoin="round" 
+        stroke-width="2" 
+        d="M19 14l-7 7m0 0l-7-7m7 7V3" 
+      />
+    </svg>
+  </div>
+</section>
+

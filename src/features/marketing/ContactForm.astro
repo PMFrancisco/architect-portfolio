@@ -1,0 +1,154 @@
+---
+/**
+ * ContactForm Component
+ * Swiss-style contact form with validation
+ */
+import Container from '../../shared/ui/Container.astro';
+import Typography from '../../shared/ui/Typography.astro';
+import Button from '../../shared/ui/Button.astro';
+import Icon from '../../shared/ui/Icon.astro';
+import { useTranslations, type Lang } from '../../shared/i18n/translations';
+
+interface Props {
+  lang: Lang;
+  class?: string;
+}
+
+const { lang, class: className = '' } = Astro.props;
+const t = useTranslations(lang);
+
+// Form action - can be customized for different form handlers
+const formAction = '/api/contact'; // Placeholder - implement based on your backend
+---
+
+<Container narrow class={className}>
+  <div class="text-center mb-12">
+    <Typography as="p" variant="label" color="muted" class="mb-4">
+      {t('contact.subtitle')}
+    </Typography>
+    <Typography as="h2" variant="h2">
+      {t('contact.title')}
+    </Typography>
+  </div>
+  
+  <form 
+    action={formAction}
+    method="POST"
+    class="space-y-6 max-w-xl mx-auto"
+    id="contact-form"
+  >
+    <!-- Name Field -->
+    <div>
+      <label 
+        for="name" 
+        class="block text-sm font-medium mb-2 text-neutral-900 dark:text-neutral-100"
+      >
+        {t('contact.name')}
+      </label>
+      <input 
+        type="text" 
+        id="name" 
+        name="name"
+        required
+        autocomplete="name"
+        class="w-full px-4 py-3 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-colors"
+        placeholder={lang === 'es' ? 'Tu nombre' : 'Your name'}
+      />
+    </div>
+    
+    <!-- Email Field -->
+    <div>
+      <label 
+        for="email" 
+        class="block text-sm font-medium mb-2 text-neutral-900 dark:text-neutral-100"
+      >
+        {t('contact.email')}
+      </label>
+      <input 
+        type="email" 
+        id="email" 
+        name="email"
+        required
+        autocomplete="email"
+        class="w-full px-4 py-3 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-colors"
+        placeholder={lang === 'es' ? 'tu@email.com' : 'your@email.com'}
+      />
+    </div>
+    
+    <!-- Subject Field (optional) -->
+    <div>
+      <label 
+        for="subject" 
+        class="block text-sm font-medium mb-2 text-neutral-900 dark:text-neutral-100"
+      >
+        {lang === 'es' ? 'Asunto' : 'Subject'}
+      </label>
+      <select
+        id="subject"
+        name="subject"
+        class="w-full px-4 py-3 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-colors"
+      >
+        <option value="">{lang === 'es' ? 'Selecciona un tema' : 'Select a topic'}</option>
+        <option value="feasibility">{lang === 'es' ? 'Estudio de Factibilidad' : 'Feasibility Study'}</option>
+        <option value="project-management">{lang === 'es' ? 'Gestión de Proyecto' : 'Project Management'}</option>
+        <option value="design-review">{lang === 'es' ? 'Revisión de Diseño' : 'Design Review'}</option>
+        <option value="compliance">{lang === 'es' ? 'Cumplimiento Normativo' : 'Regulatory Compliance'}</option>
+        <option value="other">{lang === 'es' ? 'Otro' : 'Other'}</option>
+      </select>
+    </div>
+    
+    <!-- Message Field -->
+    <div>
+      <label 
+        for="message" 
+        class="block text-sm font-medium mb-2 text-neutral-900 dark:text-neutral-100"
+      >
+        {t('contact.message')}
+      </label>
+      <textarea 
+        id="message" 
+        name="message"
+        rows="5"
+        required
+        class="w-full px-4 py-3 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-colors resize-none"
+        placeholder={lang === 'es' ? 'Cuéntame sobre tu proyecto...' : 'Tell me about your project...'}
+      ></textarea>
+    </div>
+    
+    <!-- Submit Button -->
+    <Button type="submit" variant="primary" fullWidth>
+      {t('contact.send')}
+      <Icon name="arrow-right" size="small" class="ml-2" />
+    </Button>
+    
+    <!-- Privacy note -->
+    <p class="text-xs text-center text-neutral-500">
+      {lang === 'es' 
+        ? 'Al enviar este formulario, aceptas nuestra política de privacidad.'
+        : 'By submitting this form, you agree to our privacy policy.'}
+    </p>
+  </form>
+</Container>
+
+<script>
+  // Basic form handling - can be enhanced with actual submission logic
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    
+    // For now, just log the data - implement actual submission
+    console.log('Form submitted:', data);
+    
+    // Show success message (placeholder)
+    alert(document.documentElement.lang === 'es' 
+      ? '¡Gracias! Tu mensaje ha sido enviado.'
+      : 'Thank you! Your message has been sent.');
+    
+    form.reset();
+  });
+</script>
+

@@ -1,0 +1,73 @@
+---
+/**
+ * ProjectList Component
+ * Grid layout for displaying project cards
+ */
+import Grid from '../../shared/ui/Grid.astro';
+import ProjectCard from './ProjectCard.astro';
+import type { Lang } from '../../shared/i18n/translations';
+
+interface Project {
+  id: string;
+  data: {
+    title: string;
+    slug: string;
+    category: string;
+    year: number;
+    location: string;
+    description: string;
+    featured?: boolean;
+    images?: string[];
+  };
+}
+
+interface Props {
+  projects: Project[];
+  lang: Lang;
+  showFeatured?: boolean;
+  limit?: number;
+  class?: string;
+}
+
+const { 
+  projects, 
+  lang, 
+  showFeatured = true,
+  limit,
+  class: className = '' 
+} = Astro.props;
+
+// Sort by year (newest first), then by featured
+const sortedProjects = [...projects].sort((a, b) => {
+  if (showFeatured && a.data.featured !== b.data.featured) {
+    return a.data.featured ? -1 : 1;
+  }
+  return b.data.year - a.data.year;
+});
+
+// Apply limit if specified
+const displayProjects = limit ? sortedProjects.slice(0, limit) : sortedProjects;
+---
+
+<Grid cols={12} gap="large" class={className}>
+  {displayProjects.map((project, index) => (
+    <div class:list={[
+      'col-span-4 md:col-span-4',
+      showFeatured && project.data.featured && index === 0 && 'lg:col-span-8',
+      !project.data.featured && 'lg:col-span-4'
+    ]}>
+      <ProjectCard
+        title={project.data.title}
+        slug={project.data.slug}
+        category={project.data.category}
+        year={project.data.year}
+        location={project.data.location}
+        description={project.data.description}
+        image={project.data.images?.[0]}
+        featured={showFeatured && project.data.featured && index === 0}
+        lang={lang}
+      />
+    </div>
+  ))}
+</Grid>
+

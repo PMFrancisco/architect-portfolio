@@ -1,0 +1,107 @@
+---
+/**
+ * Bio Component
+ * About section with photo, description, and stats
+ */
+import Container from '../../shared/ui/Container.astro';
+import Grid from '../../shared/ui/Grid.astro';
+import Typography from '../../shared/ui/Typography.astro';
+import { useTranslations, type Lang } from '../../shared/i18n/translations';
+
+interface Stat {
+  value: string;
+  label: string;
+}
+
+interface Props {
+  lang: Lang;
+  name?: string;
+  title?: string;
+  description: string;
+  extendedDescription?: string;
+  image?: string;
+  stats?: Stat[];
+  class?: string;
+}
+
+const { 
+  lang, 
+  name = 'Arquitecto',
+  title,
+  description,
+  extendedDescription,
+  image,
+  stats = [],
+  class: className = '' 
+} = Astro.props;
+
+const t = useTranslations(lang);
+
+// Default stats if none provided
+const defaultStats: Stat[] = [
+  { value: '50+', label: lang === 'es' ? 'Proyectos' : 'Projects' },
+  { value: '15', label: lang === 'es' ? 'Años' : 'Years' },
+  { value: '98%', label: lang === 'es' ? 'Satisfacción' : 'Satisfaction' },
+];
+
+const displayStats = stats.length > 0 ? stats : defaultStats;
+---
+
+<Container class={className}>
+  <Grid>
+    <!-- Photo -->
+    <div class="col-span-4 md:col-span-4 lg:col-span-5">
+      <div class="aspect-portrait bg-neutral-800 mb-6 md:mb-0 overflow-hidden">
+        {image ? (
+          <img 
+            src={image} 
+            alt={name}
+            class="w-full h-full object-cover"
+          />
+        ) : (
+          <div class="w-full h-full bg-gradient-to-br from-neutral-700 to-neutral-800" />
+        )}
+      </div>
+    </div>
+    
+    <!-- Content -->
+    <div class="col-span-4 md:col-span-4 lg:col-span-6 lg:col-start-7 flex flex-col justify-center">
+      <Typography as="p" variant="label" class="mb-4 text-neutral-400">
+        {t('about.title')}
+      </Typography>
+      
+      {title && (
+        <Typography as="h2" variant="h2" class="mb-6 text-white">
+          {title}
+        </Typography>
+      )}
+      
+      <Typography as="p" variant="body-large" class="mb-6 text-neutral-300">
+        {description}
+      </Typography>
+      
+      {extendedDescription && (
+        <Typography as="p" variant="body" class="mb-8 text-neutral-400">
+          {extendedDescription}
+        </Typography>
+      )}
+      
+      <!-- Stats -->
+      {displayStats.length > 0 && (
+        <div class="grid grid-cols-3 gap-4 pt-6 border-t border-neutral-700">
+          {displayStats.map((stat) => (
+            <div>
+              <Typography as="p" variant="h3" class="text-primary mb-1">
+                {stat.value}
+              </Typography>
+              <Typography as="p" variant="small" class="text-neutral-500">
+                {stat.label}
+              </Typography>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  </Grid>
+</Container>
+

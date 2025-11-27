@@ -1,0 +1,80 @@
+---
+/**
+ * Project Detail Page (All Languages)
+ * Single file handles both ES and EN
+ */
+import { getCollection, render } from 'astro:content';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../shared/ui/Header.astro';
+import Footer from '../../../shared/ui/Footer.astro';
+import ProjectDetail from '../../../features/portfolio/ProjectDetail.astro';
+import { type Lang } from '../../../shared/i18n/translations';
+
+// Generate static paths for all language + project combinations
+export async function getStaticPaths() {
+  const allProjects = await getCollection('projects', ({ data }) => !data.draft);
+  
+  return allProjects.map((project) => {
+    const lang = project.data.lang as Lang;
+    const projectsPath = lang === 'es' ? 'proyectos' : 'projects';
+    
+    return {
+      params: { 
+        lang, 
+        projects: projectsPath,
+        slug: project.data.slug 
+      },
+      props: { project },
+    };
+  });
+}
+
+const { lang, projects: projectsPath } = Astro.params as { lang: Lang; projects: string; slug: string };
+const { project } = Astro.props;
+const { Content } = await render(project);
+---
+
+<BaseLayout 
+  title={`${project.data.title} | ${lang === 'es' ? 'Arquitecto' : 'Architect'}`} 
+  description={project.data.description}
+  image={project.data.coverImage || project.data.images?.[0]}
+  type="article"
+  publishedDate={`${project.data.year}-01-01`}
+  lang={lang}
+>
+  <Header lang={lang} currentPath={getRelativeLocaleUrl(lang, `/${projectsPath}/${project.data.slug}`)} />
+  
+  <main class="pt-16 md:pt-20">
+    <ProjectDetail
+      title={project.data.title}
+      category={project.data.category}
+      year={project.data.year}
+      client={project.data.client}
+      location={project.data.location}
+      description={project.data.description}
+      challenge={project.data.challenge}
+      solution={project.data.solution}
+      area={project.data.area}
+      duration={project.data.duration}
+      budget={project.data.budget}
+      images={project.data.images}
+      content=""
+      lang={lang}
+    />
+    
+    <!-- Markdown Content -->
+    {project.body && (
+      <section class="py-16 md:py-24">
+        <div class="swiss-container-narrow">
+          <div class="prose prose-lg dark:prose-invert max-w-none prose-headings:font-semibold prose-headings:tracking-tight prose-a:text-primary">
+            <Content />
+          </div>
+        </div>
+      </section>
+    )}
+  </main>
+
+  <Footer lang={lang} />
+</BaseLayout>
+

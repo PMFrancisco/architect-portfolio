@@ -1,0 +1,311 @@
+---
+/**
+ * Home Page (All Languages)
+ * Single file handles both ES and EN using Astro's i18n
+ */
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../shared/ui/Header.astro';
+import Footer from '../../shared/ui/Footer.astro';
+import Container from '../../shared/ui/Container.astro';
+import Section from '../../shared/ui/Section.astro';
+import Grid from '../../shared/ui/Grid.astro';
+import Button from '../../shared/ui/Button.astro';
+import Typography from '../../shared/ui/Typography.astro';
+import Icon from '../../shared/ui/Icon.astro';
+import ScrollReveal from '../../shared/ui/ScrollReveal.astro';
+import { useTranslations, type Lang } from '../../shared/i18n/translations';
+
+// Generate static paths for all supported languages
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'es' } },
+    { params: { lang: 'en' } },
+  ];
+}
+
+const { lang } = Astro.params as { lang: Lang };
+const t = useTranslations(lang);
+
+// Localized content
+const content = {
+  es: {
+    title: 'Arquitecto | Consultoría Arquitectónica',
+    label: 'Consultor Externo',
+    aboutTitle: 'Más de 15 años transformando espacios',
+    aboutDesc: 'Arquitecto especializado en consultoría para proyectos residenciales, comerciales e institucionales. Mi enfoque combina rigor técnico con sensibilidad al contexto.',
+    aboutExtended: 'He colaborado con desarrolladores, gobiernos y familias en más de 50 proyectos, desde estudios de factibilidad hasta supervisión de obra. Mi objetivo es agregar valor en cada etapa del proceso.',
+    services: [
+      { icon: 'clipboard-check' as const, title: 'Estudios de Factibilidad', desc: 'Análisis técnico y financiero para validar la viabilidad de tu proyecto.' },
+      { icon: 'calendar-check' as const, title: 'Gestión de Proyectos', desc: 'Coordinación integral de todas las etapas del proyecto.' },
+      { icon: 'search' as const, title: 'Revisión de Diseño', desc: 'Análisis crítico para optimizar funcionalidad y costos.' },
+      { icon: 'shield-check' as const, title: 'Cumplimiento Normativo', desc: 'Asesoría en regulaciones urbanas y certificaciones.' },
+    ],
+    projects: [
+      { title: 'Casa Horizonte', slug: 'casa-horizonte', category: 'Residencial', year: '2023', location: 'Mallorca' },
+      { title: 'Torre Nexus', slug: 'torre-nexus', category: 'Comercial', year: '2022', location: 'Barcelona' },
+      { title: 'Centro Cultural Raíces', slug: 'centro-cultural-raices', category: 'Institucional', year: '2021', location: 'Sevilla' },
+    ],
+    stats: [
+      { value: '50+', label: 'Proyectos' },
+      { value: '15', label: 'Años' },
+      { value: '98%', label: 'Satisfacción' },
+    ],
+  },
+  en: {
+    title: 'Architect | Architectural Consulting',
+    label: 'External Consultant',
+    aboutTitle: 'Over 15 years transforming spaces',
+    aboutDesc: 'Architect specialized in consulting for residential, commercial, and institutional projects. My approach combines technical rigor with contextual sensitivity.',
+    aboutExtended: 'I have collaborated with developers, governments, and families on over 50 projects, from feasibility studies to construction supervision. My goal is to add value at every stage of the process.',
+    services: [
+      { icon: 'clipboard-check' as const, title: 'Feasibility Studies', desc: 'Technical and financial analysis to validate your project viability.' },
+      { icon: 'calendar-check' as const, title: 'Project Management', desc: 'Comprehensive coordination of all project stages.' },
+      { icon: 'search' as const, title: 'Design Review', desc: 'Critical analysis to optimize functionality and costs.' },
+      { icon: 'shield-check' as const, title: 'Regulatory Compliance', desc: 'Advisory on urban regulations and certifications.' },
+    ],
+    projects: [
+      { title: 'Horizonte House', slug: 'casa-horizonte', category: 'Residential', year: '2023', location: 'Mallorca' },
+      { title: 'Nexus Tower', slug: 'torre-nexus', category: 'Commercial', year: '2022', location: 'Barcelona' },
+      { title: 'Raíces Cultural Center', slug: 'centro-cultural-raices', category: 'Institutional', year: '2021', location: 'Seville' },
+    ],
+    stats: [
+      { value: '50+', label: 'Projects' },
+      { value: '15', label: 'Years' },
+      { value: '98%', label: 'Satisfaction' },
+    ],
+  },
+};
+
+const c = content[lang];
+const projectsPath = lang === 'es' ? 'proyectos' : 'projects';
+const servicesPath = lang === 'es' ? 'servicios' : 'services';
+
+// Helper to build URLs with language prefix
+const buildUrl = (path: string) => `/${lang}${path}`;
+---
+
+<BaseLayout title={c.title} lang={lang}>
+  <Header lang={lang} currentPath={buildUrl('/')} />
+  
+  <main class="pt-16 md:pt-20">
+    <!-- Hero Section -->
+    <Section spacing="none" class="min-h-[calc(100vh-5rem)] flex items-center">
+      <Container>
+        <Grid>
+          <div class="col-span-4 md:col-span-6 md:col-start-2 lg:col-span-8 lg:col-start-3 text-center">
+            <Typography as="p" variant="label" color="muted" class="mb-6 animate-fade-up opacity-0" style="animation-delay: 100ms;">
+              {c.label}
+            </Typography>
+            
+            <Typography as="h1" variant="h1" class="mb-6 animate-fade-up opacity-0" style="animation-delay: 200ms;">
+              {t('hero.title')}
+            </Typography>
+            
+            <Typography as="p" variant="body-large" color="muted" class="mb-10 animate-fade-up opacity-0" style="animation-delay: 300ms;">
+              {t('hero.subtitle')}
+            </Typography>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up opacity-0" style="animation-delay: 400ms;">
+              <Button href="#servicios" variant="primary">
+                {t('hero.cta')}
+              </Button>
+              <Button href="#proyectos" variant="outline">
+                {t('projects.viewAll')}
+              </Button>
+            </div>
+          </div>
+        </Grid>
+      </Container>
+    </Section>
+
+    <!-- Services Section -->
+    <Section id="servicios" background="muted">
+      <Container>
+        <Grid>
+          <ScrollReveal class="col-span-4 md:col-span-8 lg:col-span-12 flex flex-col md:flex-row md:items-end md:justify-between mb-12">
+            <div>
+              <Typography as="p" variant="label" color="muted" class="mb-4">
+                {t('services.subtitle')}
+              </Typography>
+              <Typography as="h2" variant="h2">
+                {t('services.title')}
+              </Typography>
+            </div>
+            <Button href={buildUrl(`/${servicesPath}`)} variant="outline" size="small" class="mt-6 md:mt-0">
+              {lang === 'es' ? 'Ver todos los servicios' : 'View all services'}
+              <Icon name="arrow-right" size="small" class="ml-2" />
+            </Button>
+          </ScrollReveal>
+          
+          {c.services.map((service, index) => (
+            <ScrollReveal 
+              class="col-span-4 md:col-span-4 lg:col-span-3"
+              delay={index * 100}
+            >
+              <div class="p-6 bg-white dark:bg-neutral-800 h-full hover:shadow-lg transition-shadow duration-300">
+                <div class="w-12 h-12 flex items-center justify-center bg-primary/10 text-primary mb-4">
+                  <Icon name={service.icon} size="large" />
+                </div>
+                <Typography as="h4" variant="h4" class="mb-2">
+                  {service.title}
+                </Typography>
+                <Typography as="p" variant="body" color="muted">
+                  {service.desc}
+                </Typography>
+              </div>
+            </ScrollReveal>
+          ))}
+        </Grid>
+      </Container>
+    </Section>
+
+    <!-- Projects Section -->
+    <Section id="proyectos">
+      <Container>
+        <Grid>
+          <ScrollReveal class="col-span-4 md:col-span-8 lg:col-span-12 flex flex-col md:flex-row md:items-end md:justify-between mb-12">
+            <div>
+              <Typography as="p" variant="label" color="muted" class="mb-4">
+                {t('projects.subtitle')}
+              </Typography>
+              <Typography as="h2" variant="h2">
+                {t('projects.title')}
+              </Typography>
+            </div>
+            <Button href={buildUrl(`/${projectsPath}`)} variant="outline" size="small" class="mt-6 md:mt-0">
+              {t('projects.viewAll')}
+              <Icon name="arrow-right" size="small" class="ml-2" />
+            </Button>
+          </ScrollReveal>
+          
+          {c.projects.map((project, index) => (
+            <ScrollReveal 
+              class="col-span-4 md:col-span-4 lg:col-span-4"
+              animation="fade-up"
+              delay={index * 150}
+            >
+              <a href={buildUrl(`/${projectsPath}/${project.slug}`)} class="group block">
+                <div class="aspect-photo bg-neutral-200 dark:bg-neutral-800 mb-4 overflow-hidden">
+                  <div class="w-full h-full bg-gradient-to-br from-neutral-300 to-neutral-400 dark:from-neutral-700 dark:to-neutral-800 group-hover:scale-105 transition-transform duration-500" />
+                </div>
+                <Typography as="p" variant="label" color="muted" class="mb-1">
+                  {project.category} · {project.year}
+                </Typography>
+                <Typography as="h3" variant="h4" class="group-hover:text-primary transition-colors">
+                  {project.title}
+                </Typography>
+                <Typography as="p" variant="small" color="muted" class="flex items-center gap-1 mt-1">
+                  <Icon name="map-pin" size="small" />
+                  {project.location}
+                </Typography>
+              </a>
+            </ScrollReveal>
+          ))}
+        </Grid>
+      </Container>
+    </Section>
+
+    <!-- About Section -->
+    <section id="sobre-mi" class="py-16 md:py-24 bg-neutral-900 text-white" style="background-color: #171717 !important;">
+      <Container>
+        <Grid>
+          <ScrollReveal animation="fade-right" class="col-span-4 md:col-span-4 lg:col-span-5">
+            <div class="aspect-portrait bg-neutral-800 mb-6 md:mb-0">
+              <div class="w-full h-full bg-gradient-to-br from-neutral-700 to-neutral-800" />
+            </div>
+          </ScrollReveal>
+          <div class="col-span-4 md:col-span-4 lg:col-span-6 lg:col-start-7 flex flex-col justify-center">
+            <ScrollReveal animation="fade-left" delay={100}>
+              <p class="text-xs font-medium uppercase tracking-widest mb-4 text-neutral-400">
+                {t('about.title')}
+              </p>
+              <h2 class="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight leading-tight mb-6" style="color: white !important;">
+                {c.aboutTitle}
+              </h2>
+            </ScrollReveal>
+            <ScrollReveal animation="fade-left" delay={200}>
+              <p class="text-lg md:text-xl leading-relaxed mb-6 text-neutral-300">
+                {c.aboutDesc}
+              </p>
+              <p class="text-base leading-relaxed mb-8 text-neutral-400">
+                {c.aboutExtended}
+              </p>
+            </ScrollReveal>
+            
+            <ScrollReveal animation="fade-up" delay={300}>
+              <div class="grid grid-cols-3 gap-4 pt-6 border-t border-neutral-700">
+                {c.stats.map((stat) => (
+                  <div>
+                    <p class="text-2xl sm:text-3xl font-semibold tracking-tight text-primary mb-1">
+                      {stat.value}
+                    </p>
+                    <p class="text-sm text-neutral-500">
+                      {stat.label}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </ScrollReveal>
+          </div>
+        </Grid>
+      </Container>
+    </section>
+
+    <!-- Contact Section -->
+    <Section id="contacto">
+      <Container narrow>
+        <ScrollReveal class="text-center mb-12">
+          <Typography as="p" variant="label" color="muted" class="mb-4">
+            {t('contact.subtitle')}
+          </Typography>
+          <Typography as="h2" variant="h2">
+            {t('contact.title')}
+          </Typography>
+        </ScrollReveal>
+        
+        <ScrollReveal animation="fade-up" delay={150}>
+        <form class="space-y-6 max-w-xl mx-auto">
+          <div>
+            <label for="name" class="block text-sm font-medium mb-2">{t('contact.name')}</label>
+            <input 
+              type="text" 
+              id="name" 
+              name="name"
+              class="w-full px-4 py-3 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 focus:border-primary focus:outline-none transition-colors"
+              required
+            />
+          </div>
+          <div>
+            <label for="email" class="block text-sm font-medium mb-2">{t('contact.email')}</label>
+            <input 
+              type="email" 
+              id="email" 
+              name="email"
+              class="w-full px-4 py-3 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 focus:border-primary focus:outline-none transition-colors"
+              required
+            />
+          </div>
+          <div>
+            <label for="message" class="block text-sm font-medium mb-2">{t('contact.message')}</label>
+            <textarea 
+              id="message" 
+              name="message"
+              rows="5"
+              class="w-full px-4 py-3 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 focus:border-primary focus:outline-none transition-colors resize-none"
+              required
+            ></textarea>
+          </div>
+          <Button type="submit" variant="primary" fullWidth>
+            {t('contact.send')}
+            <Icon name="arrow-right" size="small" class="ml-2" />
+          </Button>
+        </form>
+        </ScrollReveal>
+      </Container>
+    </Section>
+  </main>
+
+  <Footer lang={lang} />
+</BaseLayout>
+

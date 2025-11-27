@@ -1,0 +1,45 @@
+---
+/**
+ * Section Component
+ * Consistent section wrapper with Swiss-style spacing
+ */
+interface Props {
+  id?: string;
+  class?: string;
+  background?: 'default' | 'muted' | 'dark' | 'primary';
+  spacing?: 'default' | 'small' | 'large' | 'none';
+}
+
+const { 
+  id, 
+  class: className = '', 
+  background = 'default',
+  spacing = 'default'
+} = Astro.props;
+
+const bgClasses = {
+  default: 'bg-white dark:bg-neutral-950',
+  muted: 'bg-neutral-50 dark:bg-neutral-900',
+  dark: 'bg-neutral-900 dark:bg-neutral-950 text-white',
+  primary: 'bg-primary text-white',
+};
+
+const spacingClasses = {
+  default: 'py-16 md:py-24',
+  small: 'py-10 md:py-16',
+  large: 'py-24 md:py-32',
+  none: '',
+};
+---
+
+<section 
+  id={id}
+  class:list={[
+    bgClasses[background],
+    spacingClasses[spacing],
+    className
+  ]}
+>
+  <slot />
+</section>
+

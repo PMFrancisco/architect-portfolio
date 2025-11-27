@@ -1,0 +1,259 @@
+---
+/**
+ * ProjectDetail Component
+ * Full project page layout with images, description, and metrics
+ */
+import Container from '../../shared/ui/Container.astro';
+import Section from '../../shared/ui/Section.astro';
+import Grid from '../../shared/ui/Grid.astro';
+import Typography from '../../shared/ui/Typography.astro';
+import Button from '../../shared/ui/Button.astro';
+import Icon from '../../shared/ui/Icon.astro';
+import type { Lang } from '../../shared/i18n/translations';
+
+interface Props {
+  title: string;
+  category: string;
+  year: number;
+  client: string;
+  location: string;
+  description: string;
+  challenge?: string;
+  solution?: string;
+  area?: string;
+  duration?: string;
+  budget?: string;
+  images?: string[];
+  content: string;
+  lang: Lang;
+}
+
+const { 
+  title, 
+  category, 
+  year, 
+  client, 
+  location, 
+  description,
+  challenge,
+  solution,
+  area,
+  duration,
+  budget,
+  images = [],
+  content,
+  lang 
+} = Astro.props;
+
+// Labels based on language
+const labels = {
+  es: {
+    client: 'Cliente',
+    location: 'Ubicación',
+    year: 'Año',
+    area: 'Superficie',
+    duration: 'Duración',
+    budget: 'Presupuesto',
+    challenge: 'El Reto',
+    solution: 'La Solución',
+    backToProjects: 'Volver a proyectos',
+  },
+  en: {
+    client: 'Client',
+    location: 'Location',
+    year: 'Year',
+    area: 'Area',
+    duration: 'Duration',
+    budget: 'Budget',
+    challenge: 'The Challenge',
+    solution: 'The Solution',
+    backToProjects: 'Back to projects',
+  },
+};
+
+const t = labels[lang];
+const projectsPath = lang === 'es' ? 'proyectos' : 'projects';
+const backHref = `/${lang}/${projectsPath}`;
+
+// Category labels
+const categoryLabels: Record<string, Record<Lang, string>> = {
+  residencial: { es: 'Residencial', en: 'Residential' },
+  comercial: { es: 'Comercial', en: 'Commercial' },
+  institucional: { es: 'Institucional', en: 'Institutional' },
+  urbanismo: { es: 'Urbanismo', en: 'Urban Planning' },
+  interiorismo: { es: 'Interiorismo', en: 'Interior Design' },
+  consultoria: { es: 'Consultoría', en: 'Consulting' },
+};
+
+const categoryLabel = categoryLabels[category]?.[lang] || category;
+
+// Metrics to display
+const metrics = [
+  { label: t.area, value: area, icon: 'ruler' as const },
+  { label: t.duration, value: duration, icon: 'clock' as const },
+  { label: t.budget, value: budget, icon: 'building' as const },
+].filter(m => m.value);
+---
+
+<article>
+  <!-- Hero Image -->
+  <Section spacing="none" class="pt-16 md:pt-20">
+    <div class="h-[50vh] md:h-[70vh] bg-neutral-200 dark:bg-neutral-800 relative">
+      {images[0] ? (
+        <img 
+          src={images[0]} 
+          alt={title}
+          class="w-full h-full object-cover"
+        />
+      ) : (
+        <div class="w-full h-full bg-gradient-to-br from-neutral-300 to-neutral-400 dark:from-neutral-700 dark:to-neutral-800" />
+      )}
+    </div>
+  </Section>
+
+  <!-- Project Info -->
+  <Section>
+    <Container>
+      <Grid>
+        <!-- Back link -->
+        <div class="col-span-4 md:col-span-8 lg:col-span-12 mb-8">
+          <Button href={backHref} variant="ghost" size="small">
+            <Icon name="arrow-left" size="small" class="mr-2" />
+            {t.backToProjects}
+          </Button>
+        </div>
+
+        <!-- Title & Description -->
+        <div class="col-span-4 md:col-span-5 lg:col-span-7">
+          <Typography as="p" variant="label" color="muted" class="mb-4">
+            {categoryLabel} · {year}
+          </Typography>
+          
+          <Typography as="h1" variant="h1" class="mb-6">
+            {title}
+          </Typography>
+          
+          <Typography as="p" variant="body-large" color="muted" class="mb-8">
+            {description}
+          </Typography>
+
+          <!-- Metrics -->
+          {metrics.length > 0 && (
+            <div class="grid grid-cols-3 gap-4 py-6 border-t border-b border-neutral-200 dark:border-neutral-800">
+              {metrics.map((metric) => (
+                <div>
+                  <div class="flex items-center gap-2 mb-1">
+                    <Icon name={metric.icon} size="small" class="text-neutral-400" />
+                    <Typography as="span" variant="small" color="muted">
+                      {metric.label}
+                    </Typography>
+                  </div>
+                  <Typography as="p" variant="h4">
+                    {metric.value}
+                  </Typography>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <!-- Sidebar: Client & Location -->
+        <div class="col-span-4 md:col-span-3 lg:col-span-4 lg:col-start-9">
+          <div class="space-y-6">
+            <div>
+              <Typography as="p" variant="label" color="muted" class="mb-1">
+                {t.client}
+              </Typography>
+              <Typography as="p" variant="body">
+                {client}
+              </Typography>
+            </div>
+            
+            <div>
+              <Typography as="p" variant="label" color="muted" class="mb-1">
+                {t.location}
+              </Typography>
+              <Typography as="p" variant="body" class="flex items-center gap-2">
+                <Icon name="map-pin" size="small" />
+                {location}
+              </Typography>
+            </div>
+            
+            <div>
+              <Typography as="p" variant="label" color="muted" class="mb-1">
+                {t.year}
+              </Typography>
+              <Typography as="p" variant="body">
+                {year}
+              </Typography>
+            </div>
+          </div>
+        </div>
+      </Grid>
+    </Container>
+  </Section>
+
+  <!-- Challenge & Solution -->
+  {(challenge || solution) && (
+    <Section background="muted">
+      <Container>
+        <Grid>
+          {challenge && (
+            <div class="col-span-4 md:col-span-4 lg:col-span-5">
+              <Typography as="h3" variant="h3" class="mb-4">
+                {t.challenge}
+              </Typography>
+              <Typography as="p" variant="body" color="muted">
+                {challenge}
+              </Typography>
+            </div>
+          )}
+          
+          {solution && (
+            <div class="col-span-4 md:col-span-4 lg:col-span-5 lg:col-start-7">
+              <Typography as="h3" variant="h3" class="mb-4">
+                {t.solution}
+              </Typography>
+              <Typography as="p" variant="body" color="muted">
+                {solution}
+              </Typography>
+            </div>
+          )}
+        </Grid>
+      </Container>
+    </Section>
+  )}
+
+  <!-- Image Gallery -->
+  {images.length > 1 && (
+    <Section>
+      <Container>
+        <div class="space-y-6">
+          {images.slice(1).map((image, index) => (
+            <div class:list={[
+              'bg-neutral-200 dark:bg-neutral-800',
+              index % 2 === 0 ? 'aspect-wide' : 'aspect-photo'
+            ]}>
+              <img 
+                src={image} 
+                alt={`${title} - ${index + 2}`}
+                class="w-full h-full object-cover"
+                loading="lazy"
+              />
+            </div>
+          ))}
+        </div>
+      </Container>
+    </Section>
+  )}
+
+  <!-- Content (Markdown) -->
+  {content && (
+    <Section>
+      <Container narrow>
+        <div class="prose prose-lg dark:prose-invert max-w-none" set:html={content} />
+      </Container>
+    </Section>
+  )}
+</article>
+

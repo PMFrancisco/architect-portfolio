@@ -1,0 +1,20 @@
+---
+/**
+ * Container Component
+ * Swiss-style container with consistent margins and max-width
+ */
+interface Props {
+  as?: 'div' | 'section' | 'article' | 'main' | 'header' | 'footer' | 'nav';
+  class?: string;
+  narrow?: boolean;
+}
+
+const { as: Tag = 'div', class: className = '', narrow = false } = Astro.props;
+
+const containerClass = narrow ? 'swiss-container-narrow' : 'swiss-container';
+---
+
+<Tag class:list={[containerClass, className]}>
+  <slot />
+</Tag>
+
